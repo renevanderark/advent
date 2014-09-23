@@ -1,3 +1,9 @@
 #!/bin/bash
 
-iwatch -t ".*\.js$" -e modify -c "clear; /usr/local/bin/nodelint %f --config nodelint_conf.js; node %f" .
+while true;
+do varib=`inotifywait -r -e close_write .`
+clear
+echo "NODELINT\n----\n"
+echo $varib
+
+done;
