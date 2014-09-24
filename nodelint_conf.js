@@ -1,5 +1,6 @@
 var options = {
-	indent: false
+	indent: false,
+	browser: true
 };
 
 

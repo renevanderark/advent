@@ -1,18 +1,16 @@
 var first = require('../../lib/shared/first.js');
 
 exports.testGender = function (test) {
-	var logFuncA = function (msg) { test.strictEqual('Jack voices his opinion', msg); },
-		logFuncB = function (msg) { test.strictEqual('Jacqueline voices her opinion', msg); },
-		jack = new first.Derived({name: "Jack", logFunc: logFuncA}),
-		jacq = new first.Derived({name: "Jacqueline", gender: "f", logFunc: logFuncB}),
+	var jack = new first.Derived({name: "Jack"}),
+		jacq = new first.Derived({name: "Jacqueline", gender: "f"}),
 		juz = new first.Derived({name: "Juz", gender: "a"});
 
 	test.expect(5);
-	test.ok(true, jack.getPron() === 'his');
-	test.ok(true, jacq.getPron() === 'her');
-	test.ok(true, juz.getPron() === 'his');
-	jack.giveOpinion();
-	jacq.giveOpinion();
+	test.strictEqual('his', jack.getPron());
+	test.strictEqual('her', jacq.getPron());
+	test.strictEqual('his', juz.getPron());
+	test.strictEqual('Jack voices his opinion', jack.getOpinion());
+	test.strictEqual('Jacqueline voices her opinion', jacq.getOpinion());
 	test.done();
 };
 
