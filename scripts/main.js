@@ -4,38 +4,84 @@
 var viewport = require('./viewport.js');
 var pauseEvent = new Event('pause');
 var resumeEvent = new Event('resume');
-
-
+var gameStates = {paused: 0, running: 1};
+var gameState = gameStates.running;
+var x = 10, y = 10;
 
 window.addEventListener('pause', function (e) {
-	console.log("PAUSE EVENT triggered");
+	gameState = gameStates.paused;
 });
 
 window.addEventListener('resume', function (e) {
-	console.log("RESUME EVENT triggered");
+	gameState = gameStates.running;
 });
+
+window.requestAnimFrame = (function () {
+	return window.requestAnimationFrame ||
+		window.webkitRequestAnimationFrame ||
+		window.mozRequestAnimationFrame ||
+		function (callback) { window.setTimeout(callback, 1000 / 60); };
+}());
 
 viewport.init({
 	body: document.getElementById("thebod"),
 	window: window,
 	document: document,
 	pauseEvent: pauseEvent,
-	resumeEvent: resumeEvent
+	resumeEvent: resumeEvent,
+	layers: ["foreground", "background"]
 });
+
+var background = viewport.getCanvas("background"),
+	backgroundContext = background.getContext('2d'),
+	lastTm = new Date().getTime(),
+	pDt = 0,
+	tmStep = 16;
+
+function update() {
+	if (gameState === gameStates.paused) { return; }
+	x += 3;
+	y += 3;
+	if (x > background.width) { x = -30; }
+	if (y > background.height) { y = -10; }
+}
+function nextTick() {
+	var tm = new Date().getTime(),
+		dt = tm - lastTm;
+
+	lastTm = tm;
+	pDt += dt;
+	backgroundContext.clearRect(x, y, 30, 10);
+
+	window.requestAnimFrame(nextTick);
+
+	if (pDt >= tmStep) {
+		update();
+		pDt -= tmStep;
+	}
+	backgroundContext.fillRect(x, y, 30, 10);
+}
+
+nextTick();
 
 },{"./viewport.js":2}],2:[function(require,module,exports){
 module.exports = (function (my) {
 	"use strict";
-	// TODO: configure multiple canvases 
-	var window, document, body, canvas, pauseEvent, resumeEvent,
-		resumeTimeout, defaultResumeTimeout = 60, resizing = false;
+	var window, document, body, layers, canvases = {}, pauseEvent, resumeEvent,
+		resumeTimeout, defaultResumeTimeout = 60, resizing = false,
+		aspectRatio = 1.0;
 
 	resumeTimeout = defaultResumeTimeout;
 
 	function commitResize() {
-		// TODO: resize canvases
-		canvas.width = body.clientWidth;
-		canvas.height = body.clientHeight;
+		var k;
+		for (k in canvases) {
+			if (canvases.hasOwnProperty(k)) {
+				canvases[k].width = body.clientWidth;
+				canvases[k].height = body.clientHeight;
+			}
+		}
+		aspectRatio = body.clientWidth / body.clientHeight;
 	}
 
 	function pollForResize() {
@@ -68,19 +114,31 @@ module.exports = (function (my) {
 		body = opts.body;
 		pauseEvent = opts.pauseEvent;
 		resumeEvent = opts.resumeEvent;
+		layers = opts.layers;
 		if (typeof window === 'undefined' ||
 				typeof document === 'undefined' ||
 				typeof body === 'undefined' ||
 				typeof pauseEvent === 'undefined' ||
-				typeof resumeEvent === 'undefined') {
+				typeof resumeEvent === 'undefined' ||
+				typeof layers === 'undefined') {
 			throw new Error('undefined references');
 		}
-		// TODO: initialize multiple canvases
-		canvas = document.createElement("canvas");
+
+		if (!(layers instanceof Array)) {
+			throw new Error('layers should be an array of strings');
+		}
+
+		for (i = 0; i < layers.length; i++) {
+			canvases[layers[i]] = document.createElement("canvas");
+			body.appendChild(canvases[layers[i]]);
+		}
 		window.onresize = onresize;
-		body.appendChild(canvas);
 		commitResize();
 		pollForResize();
+	};
+
+	my.getCanvas = function (name) {
+		if (canvases.hasOwnProperty(name)) { return canvases[name]; }
 	};
 
 	return my;

@@ -27,17 +27,20 @@ exports.testInit = function (test) {
 			clientHeight: 321
 		};
 
-	test.expect(6);
+	test.expect(10);
 	viewport.init({
 		window: mockWin,
 		document: mockDoc,
 		body: mockBod,
 		aspect: aspect,
 		pauseEvent: mockPauseEvent,
-		resumeEvent: mockResumeEvent
+		resumeEvent: mockResumeEvent,
+		layers: ["background", "foreground"]
 	});
 	test.strictEqual(mockCan.width, 123);
 	test.strictEqual(mockCan.height, 321);
+	test.strictEqual(viewport.getCanvas("foreground").width, 123);
+	test.strictEqual(viewport.getCanvas("background").width, 123);
 	test.done();
 };
 
