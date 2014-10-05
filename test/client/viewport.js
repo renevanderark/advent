@@ -32,15 +32,15 @@ exports.testInit = function (test) {
 		window: mockWin,
 		document: mockDoc,
 		body: mockBod,
-		aspect: aspect,
+		aspectRatio: aspect,
 		pauseEvent: mockPauseEvent,
 		resumeEvent: mockResumeEvent,
 		layers: ["background", "foreground"]
 	});
-	test.strictEqual(mockCan.width, 123);
+	test.strictEqual(Math.floor(mockCan.width), 180.0);
 	test.strictEqual(mockCan.height, 321);
-	test.strictEqual(viewport.getCanvas("foreground").width, 123);
-	test.strictEqual(viewport.getCanvas("background").width, 123);
+	test.strictEqual(Math.floor(viewport.getCanvas("foreground").width), 180.0);
+	test.strictEqual(Math.floor(viewport.getCanvas("background").width), 180.0);
 	test.done();
 };
 
