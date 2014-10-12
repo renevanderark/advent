@@ -1,9 +1,9 @@
 {
 	"name": "advent",
 	"scripts": {
-    	"test": "npm run test-nodelint && npm run test-nodeunit",
-	    "test-nodelint": "nodelint $(find ./lib -name \\*.js)",
-    	"test-nodeunit": "nodeunit $(find ./test -name \\*.js)",
+		"test": "npm run test-nodelint && npm run test-nodeunit",
+		"test-nodelint": "nodelint $(find ./lib -name \\*.js)",
+		"test-nodeunit": "nodeunit $(find ./test -name \\*.js)",
 		"test-watcher": "./testrunner.sh"
 	}
 }
