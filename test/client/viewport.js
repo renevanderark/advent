@@ -37,10 +37,10 @@ exports.testInit = function (test) {
 		resumeEvent: mockResumeEvent,
 		layers: ["background", "foreground"]
 	});
-	test.strictEqual(Math.floor(mockCan.width), 180.0);
-	test.strictEqual(mockCan.height, 321);
-	test.strictEqual(Math.floor(viewport.getCanvas("foreground").width), 180.0);
-	test.strictEqual(Math.floor(viewport.getCanvas("background").width), 180.0);
+	test.strictEqual(Math.floor(mockCan.width), 123.0);
+	test.strictEqual(Math.floor(mockCan.height), 69.0);
+	test.strictEqual(Math.floor(viewport.getCanvas("foreground").width), 123.0);
+	test.strictEqual(Math.floor(viewport.getCanvas("background").width), 123.0);
 	test.done();
 };
 
